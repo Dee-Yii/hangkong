@@ -1,0 +1,54 @@
+extends ../../layout
+block stylesheets
+    link(rel="stylesheet", href="/css/index.min.css")
+block content
+    include ../../includes/header
+    .main
+        include ../../includes/sidebarClient
+        .content
+            .control-bar
+                a.btn(href="javascript:;") 导出EXL
+            .search-bar
+                | 注册时间:
+                input#dateStart.picker(type="text" placeholder="开始时间")
+                span --
+                input#dateEnd.picker(type="text" placeholder="结束时间")
+                input(type="text" placeholder="所属机构")
+                input(type="text" placeholder="所属经纪人")
+                input(type="text" placeholder="昵称")
+                input(type="text" placeholder="手机号码")
+                a.btn(href="javascript:;") 查询
+            .data-container
+                table
+                    tr
+                        th
+                            input(type="checkbox")
+                        th 注册时间
+                        th 用户昵称
+                        th 手机号码
+                        th 所属机构
+                        th 所属经纪人
+                        th 操作
+                    - var list = [1,2,3,4,5,6,7,8,9,10]
+                    for i in list
+                        tr
+                            td
+                                input(type="checkbox")
+                            td 2016-10-12
+                            td 瓦夏朵
+                            td 13200989999
+                            td 华东
+                            td 张全蛋
+                            td
+                                a(href="/clientManage/clientListView/buyLog?id=123") 查看
+                                span |
+                                a.J_showChangeLine(href="javascript:;") 额度
+                                span |
+                                a.J_showStopTrade(href="javascript:;") 停止交易
+                .pagination
+    include ../../modals/changeLineModal
+block scripts
+    script.
+        require(['common'], function () {
+            require(['page/clientList']);
+        });

@@ -1,0 +1,27 @@
+.remodal.changeUserModal(data-remodal-id="changeUserModal")
+    .remodal-head
+        .remodal-title 修改用户
+        .remodal-close(data-remodal-action="cancel")
+    .remodal-body
+        form.modalForm
+            .form-control
+                label 所属机构
+                input(type="text" name="orgName")
+            .form-control
+                label 登录账号
+                input.w200(type="text" name="username")
+                a.check-code.J_checkUsername(href="javascript:;") 检测可用
+            .form-control
+                label 登录密码
+                input(type="text" name="password")
+            .form-control
+                label 用户名称
+                input(type="text" name="nickname")
+            .form-control
+                label 所属角色
+                select(name="roleType")
+                    option(value="0") 客服
+                    option(value="1") 结算专员
+                    option(value="2") 后台维护管理员
+    .remodal-footer
+        a.remodal-confirm(href="javascript:;" data-remodal-action="confirm") 确 定

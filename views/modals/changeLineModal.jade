@@ -1,0 +1,22 @@
+.remodal.changeLineModal(data-remodal-id="changeLineModal")
+    .remodal-head
+        .remodal-title 修改额度
+        .remodal-close(data-remodal-action="cancel")
+    .remodal-body
+        form.modalForm
+            .form-control
+                label 所属机构
+                input(type="text" name="orgName" readonly)
+            .form-control
+                label 昵称
+                input(type="text" name="nickname" readonly)
+            .form-control
+                label 手机号码
+                input(type="text" name="phone" readonly)
+            .form-control
+                label 交易额度
+                input(type="text" name="line" )
+    .remodal-footer
+        a.remodal-confirm(href="javascript:;" data-remodal-action="confirm") 确认
+        a.remodal-cancel(href="javascript:;" data-remodal-action="cancel") 取消
+

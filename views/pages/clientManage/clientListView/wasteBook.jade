@@ -1,0 +1,62 @@
+extends ../../../layout
+block stylesheets
+    link(rel="stylesheet", href="/css/index.min.css")
+block content
+    include ../../../includes/header
+    .main
+        include ../../../includes/sidebarClient
+        .content
+            .control-bar
+                | 客户信息 &nbsp;&nbsp;
+                | 昵称：
+                em 王努努
+                | &nbsp;&nbsp; 手机号码：
+                em 13812923232
+                | &nbsp;&nbsp;
+                a.btn(href="javascript:;") 重置密码
+            .search-bar
+                label 类型：
+                select(name="caopanType")
+                    option(value="0") 买涨
+                    option(value="1") 买跌
+                input#dateStart.picker(type="text" placeholder="开始时间")
+                span --
+                input#dateEnd.picker(type="text" placeholder="结束时间")
+                input(type="text" placeholder="商品名称")
+                a.btn(href="javascript:;") 查询
+
+            .data-container
+                .tab-btns
+                    a(href="/clientManage/clientListView/buyLog") 购买记录
+                    a(href="/clientManage/clientListView/chuRuJinLog") 出入金记录
+                    a.active(href="/clientManage/clientListView/wasteBook") 资金流水
+                    a(href="/clientManage/clientListView/moneyLog") 资金记录
+                table
+                    tr
+                        th 日期
+                        th 流水号
+                        th 发生金额
+                        th 本次剩余
+                        th 商品名称
+                        th 商品规格
+                        th 类型
+                        th 备注
+                    - var list = [1,2,3,4,5,6,7,8,9,10]
+                    for i in list
+                        tr
+                            td 2016-10-12
+                            td 000001
+                            td 1000
+                            td 0
+                            td 法兰克福
+                            td 1分时
+                            td 开户
+                            td
+
+                .pagination
+
+block scripts
+    script.
+        require(['common'], function () {
+            require(['page/clientList']);
+        });

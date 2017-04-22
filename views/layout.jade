@@ -1,0 +1,13 @@
+doctype html
+html
+    head
+        meta(http-equiv="Content-Type" content="text/html;charset=utf-8")
+        meta(name="description" content="")
+        meta(name="keywords" content="")
+        title #{title}
+        block stylesheets
+    body
+        .wrap
+            block content
+        include includes/scripts
+        block scripts

@@ -1,0 +1,21 @@
+.remodal.checkBrokerModal(data-remodal-id="checkBrokerModal")
+    .remodal-head
+        .remodal-title 审核经纪人
+        .remodal-close(data-remodal-action="cancel")
+    .remodal-body
+        form.modalForm
+            .form-control
+                label 所属机构
+                input(type="text" name="orgName" readonly)
+            .form-control
+                label 经纪人ID
+                input(type="text" name="id" readonly)
+            .form-control
+                label 经纪人名称
+                input(type="text" name="name" readonly)
+            .form-control
+                label 手机号码
+                input(type="text" name="phone" readonly)
+    .remodal-footer
+        a.remodal-cancel(href="javascript:;" data-remodal-action="cancel") 拒绝
+        a.remodal-confirm(href="javascript:;" data-remodal-action="confirm") 通过

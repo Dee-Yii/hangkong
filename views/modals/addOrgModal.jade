@@ -1,0 +1,32 @@
+.remodal.addOrgModal(data-remodal-id="addOrgModal")
+    .remodal-head
+        .remodal-title 新建机构
+        .remodal-close(data-remodal-action="cancel")
+    .remodal-body
+        form.modalForm
+            .form-control
+                label 机构名称
+                input(type="text" name="orgName")
+            .form-control
+                label 机构编码
+                input(type="text" name="orgCode")
+            .form-control
+                label 机构层级
+                select(name="orgLevel")
+                    option(value="0") 上层机构
+                    option(value="1") 二级机构
+            .form-control
+                label 机构类型
+                select(name="orgType")
+                    option(value="0") 航空
+                    option(value="1") 陆运
+                    option(value="2") 海运
+                    option(value="3") 其他
+            .form-control
+                label 手机号码
+                input(type="text" name="phone")
+            .form-control
+                label 固定电话
+                input(type="text" name="cellphone")
+    .remodal-footer
+        a.remodal-confirm(href="javascript:;") 确 定

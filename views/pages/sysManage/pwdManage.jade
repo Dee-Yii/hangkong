@@ -1,0 +1,31 @@
+extends ../../layout
+block stylesheets
+    link(rel="stylesheet", href="/css/index.min.css")
+block content
+    include ../../includes/header
+    .main
+        include ../../includes/sidebarSys
+        .content
+            form.pwd-form
+                h5 密码修改
+                .form-control
+                    label 旧密码：
+                    input(type="password")
+                .form-control
+                    label 验证码：
+                    input.w200(type="text")
+                    a.check-code.J_sendCheckCode(href="javascript:;") 发送验证码
+                .form-control
+                    label 新密码：
+                    input(type="password")
+                .form-control
+                    label 新密码确认：
+                    input(type="password")
+                .form-control
+                    label
+                    a.submit.J_submit(href="javascript:;") 提交
+block scripts
+    script.
+        require(['common'], function () {
+            require(['page/orgManage']);
+        });

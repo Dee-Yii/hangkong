@@ -1,0 +1,20 @@
+.remodal.addBrokerModal(data-remodal-id="addBrokerModal")
+    .remodal-head
+        .remodal-title 添加经纪人
+        .remodal-close(data-remodal-action="cancel")
+    .remodal-body
+        form.modalForm
+            .form-control
+                label 所属机构
+                input(type="text" name="orgName")
+            .form-control
+                label 经纪人ID
+                input(type="text" name="id")
+            .form-control
+                label 经纪人名称
+                input(type="text" name="name")
+            .form-control
+                label 手机号码
+                input(type="text" name="phone")
+    .remodal-footer
+        a.remodal-confirm(href="javascript:;" data-remodal-action="confirm") 确认

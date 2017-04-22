@@ -1,0 +1,69 @@
+extends ../../layout
+block stylesheets
+    link(rel="stylesheet", href="/css/index.min.css")
+block content
+    include ../../includes/header
+    .main
+        include ../../includes/sidebarCount
+        .content
+            .control-bar
+                a.btn(href="javascript:;") 客户
+                a.btn(href="javascript:;") 经纪人
+                a.btn(href="javascript:;") 微圈
+            .search-bar
+                | 时间:
+                input(type="text")
+                | -
+                input(type="text")
+                input(type="text" placeholder="关键字：机构名称")
+                input(type="text" placeholder="上级机构")
+                input(type="text" placeholder="昵称")
+                input(type="text" placeholder="手机号码")
+                a.btn(href="javascript:;") 查询
+                a.btn(href="javascript:;") 导出EXL
+            .data-container
+                .count-table
+                    table
+                        tr
+                            th 结算时间
+                            th 机构编码
+                            th 机构名称
+                            th 上级机构
+                            th 初期余额
+                            th 充值
+                            th 充值手续费
+                            th 提现
+                            th 提现手续费
+                            th 留存金额
+                            th 总收益
+                            th 手续费
+                            th 现金盈亏
+                            th 关联手续费
+                            th 原始手续费
+                            th 交易手续费
+                        - var list = [1,2,3,4,5,6,7,8,9,10]
+                        for i in list
+                            tr
+                                td 2016-10-12
+                                td #{"00"+i}
+                                td 华东
+                                td 华东运营
+                                td 0.00
+                                td 0.00
+                                td 0.00
+                                td 0.00
+                                td
+                                td
+                                td
+                                td
+                                td
+                                td
+                                td
+                                td
+                .pagination
+
+block scripts
+    script.
+        require(['common'], function () {
+            require(['page/orgManage']);
+        });

@@ -1,0 +1,15 @@
+extends layout
+block stylesheets
+    link(rel="stylesheet", href="/css/community/error.min.css")
+block content
+    form(id="form", action="/issue", method="post")
+        .head
+            a.back.fl(href="javascript:history.go(-1);")
+            .head-right
+                span 错误页面
+        #main
+            .error-box
+                p.title 没有找到页面
+                p 可能的原因是：
+                p 1.访问路径错误
+                p 2.页面已被删除

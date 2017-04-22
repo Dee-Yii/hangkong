@@ -1,0 +1,50 @@
+extends ../../layout
+block stylesheets
+    link(rel="stylesheet", href="/css/index.min.css")
+block content
+    include ../../includes/header
+    .main
+        include ../../includes/sidebarClient
+        .content
+            .search-bar
+                | 范围时间:
+                input(type="text")
+                | -
+                input(type="text")
+                input(type="text" placeholder="商品名称")
+                a.btn(href="javascript:;") 查询
+
+            .data-container.tab-container
+                .tab-btns
+                    a.active(href="javascript:;") 上海-纽约
+                    a(href="javascript:;") 上海-东京
+                    a(href="javascript:;") 上海-法兰克福
+                .tab-content
+                    .tab
+                        table
+                            tr
+                                th 日期
+                                th 交易订单号
+                                th 交易类型
+                                th 金额
+                                th 状态
+                                th 平台审核状态
+                                th 客户名称
+                            - var list = [1,2,3,4,5,6,7,8,9,10]
+                            for i in list
+                                tr
+                                    td 2010-03-03
+                                    td SAS129912
+                                    td 入金
+                                    td 1000
+                                    td 平台处理中
+                                    td
+                                        span.text-bule 未审核
+                                    td 大力哥
+                        .pagination
+
+block scripts
+    script.
+        require(['common'], function () {
+            require(['page/orgManage']);
+        });

@@ -1,0 +1,17 @@
+.remodal.resetPwdModal(data-remodal-id="resetPwdModal")
+    .remodal-head
+        .remodal-title 重置密码
+        .remodal-close(data-remodal-action="cancel")
+    .remodal-body
+        form.modalForm
+            .form-control
+                label 登录账号
+                input(type="text" name="username" readonly)
+            .form-control
+                label 用户名称
+                input(type="text" name="nickname" readonly)
+            .form-control
+                label 新密码
+                input(type="text" name="password")
+    .remodal-footer
+        a.remodal-confirm(href="javascript:;" data-remodal-action="confirm") 确 定

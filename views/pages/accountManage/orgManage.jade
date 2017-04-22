@@ -1,0 +1,58 @@
+extends ../../layout
+block stylesheets
+    link(rel="stylesheet", href="/css/index.min.css")
+block content
+    include ../../includes/header
+    .main
+        include ../../includes/sidebarAccount
+        .content
+            .search-bar
+                select(name="type")
+                    option(value="") 机构类型
+                    option(value="") 航空
+                    option(value="") 陆运
+                select(name="level")
+                    option(value="") 上级机构
+                    option(value="") 航空
+                    option(value="") 陆运
+                input(name="phone" type="text" placeholder="手机号码")
+                input(name="orgName" type="text" placeholder="机构名称")
+                a.btn.J_search(href="javascript:;") 查询
+            include ../../includes/controlBar
+            .data-container
+                table
+                    thead
+                        tr
+                            th
+                            th 机构编码
+                            th 机构名称
+                            th 机构类型
+                            th 上级机构
+                            th 手机号码
+                            th 固定电话
+                            th 状态
+                            th 操作
+                    tbody
+                        - var list = [1,2,3,4,5,6,7,8,9,10]
+                        for i in list
+                            tr
+                                td
+                                    input(type="checkbox" value="#{ i }")
+                                td 001
+                                td 杭州庆春支行
+                                td 航空
+                                td 华东大区
+                                td 13288886666
+                                td 0318-2198122
+                                td 禁用/启用
+                                td
+                                    a.J_showChangeOrg(href="javascript:;") 修改
+
+                .pagination
+    include ../../modals/addOrgModal
+    include ../../modals/changeOrgModal
+block scripts
+    script.
+        require(['common'], function () {
+            require(['page/orgManage']);
+        });

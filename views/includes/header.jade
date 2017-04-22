@@ -1,0 +1,9 @@
+.header
+    .clearfix.layout
+        h1
+            a(href="/accountManage/orgManage") 交易管理系统
+        div
+            a(class="#{ level[0] == 1 ? 'active' : '' }" href="/accountManage/orgManage") 账户管理
+            a(class="#{ level[0] == 2 ? 'active' : '' }" href="/clientManage/clientList") 客户管理
+            a(class="#{ level[0] == 3 ? 'active' : '' }" href="/countManage/countTable") 结算管理
+            a(class="#{ level[0] == 4 ? 'active' : '' }" href="/sysManage/pwdManage") 系统管理
