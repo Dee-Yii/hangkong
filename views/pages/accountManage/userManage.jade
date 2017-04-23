@@ -18,33 +18,35 @@ block content
             include ../../includes/controlBar
             .data-container
                 table
-                    tr
-                        th
-                            input(type="checkbox")
-                        th 登录账号
-                        th 用户昵称
-                        th 角色类型
-                        th 所属机构
-                        th 手机号码
-                        th 最后登录时间
-                        th 状态
-                        th 操作
-                    - var list = [1,2,3,4,5,6,7,8,9,10]
-                    for i in list
+                    thead
                         tr
-                            td
+                            th
                                 input(type="checkbox")
-                            td XD001
-                            td she设计师
-                            td 注册会员
-                            td 华东
-                            td 13200989999
-                            td 2016-12-12 22:12:55
-                            td 有效
-                            td
-                                a.J_showChangeUser(href="javascript:;") 修改
-                                span |
-                                a.J_showResetPwd(href="javascript:;") 重置密码
+                            th 登录账号
+                            th 用户昵称
+                            th 角色类型
+                            th 所属机构
+                            th 手机号码
+                            th 最后登录时间
+                            th 状态
+                            th 操作
+                    tbody
+                        - var list = [1,2,3,4,5,6,7,8,9,10]
+                        for i in list
+                            tr
+                                td
+                                    input(type="checkbox")
+                                td XD001
+                                td she设计师
+                                td 注册会员
+                                td 华东
+                                td 13200989999
+                                td 2016-12-12 22:12:55
+                                td 有效
+                                td
+                                    a.J_showChangeUser(href="javascript:;") 修改
+                                    span |
+                                    a.J_showResetPwd(href="javascript:;") 重置密码
                 .pagination
     include ../../modals/addUserModal
     include ../../modals/changeUserModal

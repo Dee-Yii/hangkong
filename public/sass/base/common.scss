@@ -10,24 +10,38 @@
 body{
     min-width: 1030px;
 }
-.hide{
-    display: none;
-}
 select,
 input[type=text],
 input[type=password],
-input[type=email]
-{
+input[type=email] {
     border: 1px solid $borderColor;
     height: 30px;
     padding-left: 5px;
 }
-.btn{
-    @include button($height:30px);
-    display: inline-block;
+
+
+// 文字
+.text-red{
+    color: $red;
+}
+.text-blue{
+    color: $blue;
+}
+.text-yellow{
+    color: $yellow;
 }
 .error-tips{
     color: $red;
+}
+
+
+
+.hide{
+    display: none;
+}
+.btn{
+    @include button($height:30px);
+    display: inline-block;
 }
 
 .wrap {

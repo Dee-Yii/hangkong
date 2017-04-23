@@ -6,53 +6,154 @@ define([
     "layer",
     "pagination",
     "remodal"
-], function ($, utils, config,accountAPI) {
-    var addBrokerModal = $('[data-remodal-id=addBrokerModal]').remodal();
-    var checkBrokerModal = $('[data-remodal-id=checkBrokerModal]').remodal();
+], function ($, utils, config, accountAPI) {
+    var addOrgModal = $('[data-remodal-id=addOrgModal]').remodal();
+    var changeOrgModal = $('[data-remodal-id=changeOrgModal]').remodal();
+    var oInput = $(".data-container table tbody input[type=checkbox]:checked");
+
     var body = $("body");
     var page = {
         init: function () {
             this.render();
             this.bindEvents();
         },
+
         render: function () {
             this.initModal();
+            this.fnGetList({},true);
         },
+
         bindEvents: function () {
-            this.onSearch();
-            this.onSelectAll();
+            // this.onSelectAll();
             this.onAdd();
+            this.onOpen();
+            this.onClose();
+            this.onDel();
+            this.onChange();
+            this.onSearch();
         },
+
         initModal: function () {
             $(".J_showAdd").on("click", function () {
-                addBrokerModal.open();
+                addOrgModal.open();
             });
-            body.on("click", ".J_showCheckBroker", function () {
+            body.on("click", ".J_showChangeOrg", function () {
                 var $this = $(this);
                 var oTd = $this.parents('tr').find('td');
-                var orgName = oTd.eq(4).text();
-                var brokerId = oTd.eq(1).text();
-                var brokerName = oTd.eq(2).text();
+                var id = oTd.eq(1).text();
+                var name = oTd.eq(2).text();
+                var type = oTd.eq(3).text();
+                var upLevel = oTd.eq(4).text();
                 var phone = oTd.eq(5).text();
-                var oForm = $(".checkBrokerModal .modalForm");
-                oForm.find("input[name=orgName]").val(orgName);
-                oForm.find("input[name=id]").val(brokerId);
-                oForm.find("input[name=name]").val(brokerName);
+                var cellphone = oTd.eq(6).text();
+                var oForm = $(".changeOrgModal .modalForm");
+                oForm.find("input[name=orgId]").val(id);
+                oForm.find("input[name=orgName]").val(name);
+                oForm.find("input[name=orgLevel]").val(name);
+                oForm.find("input[name=orgType]").val(name);
                 oForm.find("input[name=phone]").val(phone);
-                checkBrokerModal.open();
+                oForm.find("input[name=cellphone]").val(cellphone);
+                changeOrgModal.open();
             });
+
             $(document).on('closed', '.remodal', function (e) {
                 $(this).find(".modalForm")[0].reset();
             });
         },
-
-        onSearch: function () {
-
-        },
-
         onAdd: function () {
+            var confirmBtn = $(".addOrgModal .remodal-confirm");
+            confirmBtn.on("click", function (e) {
+                e.preventDefault();
 
+                var $this = $(this);
+                if ($this.hasClass("disabled")) return;
+                $this.addClass("disabled");
+
+                // todo Validate
+                var data = {};
+                accountAPI.addOrg(data, function (result) {
+                    console.log(result);
+
+                    addOrgModal.close();
+                    $this.removeClass("disabled");
+                })
+            })
         },
+        onOpen: function () {
+            $(".J_showOpen").on("click", function () {
+                var idArr = utils.getCheckedArr();
+                if (idArr.length > 0) {
+                    layer.confirm('确定启用选中的列表项吗？', {icon: 3}, function (index) {
+                        accountAPI.openOrg(idArr, function (result) {
+                            oInput.each(function () {
+                                $(this).parents("tr").find("td").eq(7).text(config.orgStatus[1])
+                            })
+                        });
+                        layer.close(index)
+                    });
+
+                } else {
+                    layer.alert("请先选择要启用的列表项");
+                }
+            })
+        },
+        onClose: function () {
+            $(".J_showClose").on("click", function () {
+                var idArr = utils.getCheckedArr();
+                if (idArr.length > 0) {
+                    layer.confirm('确定禁用选中的列表项吗？', {icon: 3}, function (index) {
+                        accountAPI.closeOrg(idArr, function (result) {
+                            oInput.each(function () {
+                                $(this).parents("tr").find("td").eq(7).text(config.orgStatus[2])
+                            })
+                        });
+                        layer.close(index)
+                    });
+                } else {
+                    layer.alert("请先选择要禁用的列表项");
+                }
+            })
+        },
+        onDel: function () {
+            $(".J_showDel").on("click", function () {
+                var idArr = utils.getCheckedArr();
+                if (idArr.length > 0) {
+                    layer.confirm('确定删除选中的列表项吗？', {icon: 3}, function (index) {
+                        accountAPI.delOrg(idArr, function (result) {
+                            oInput.each(function () {
+                                $(this).parents("tr").remove();
+                            })
+                        });
+                        layer.close(index)
+                    });
+                } else {
+                    layer.alert("请先选择要删除的列表项", {icon: 0});
+                }
+            })
+        },
+        onChange: function () {
+            $(".changeOrgModal .remodal-confirm").on("click", function () {
+                var data = {};
+                accountAPI.changeOrg(data, function (result) {
+                    layer.msg("修改成功");
+                })
+            })
+        },
+        onSearch: function () {
+            var _this = this;
+            $(".J_search").on("click", function () {
+                var type = $("input[name=type]").val(),
+                    level = $("input[name=level]").val(),
+                    phone = $("input[name=phone]").val() || "",
+                    orgName = $("input[name=orgName]").val() || "";
+                var data = {};
+
+                _this.fnGetList(data,true);
+
+
+            });
+        },
+
         onSelectAll: function () {
             utils.selectAll();
         },
@@ -61,7 +162,7 @@ define([
             var table = $(".data-container table");
             // showLoading(".J_consumeTable");
             // var data = {};
-            // accountAPI.searchUser(data, function (result) {
+            // accountAPI.searchOrg(data, function (result) {
             //
             // });
             var result = {
@@ -382,20 +483,18 @@ define([
                         "handle": "0"
                     }]
             };
-            console.log("获取用户管理列表 调用成功!");
+            console.log("获取机构管理列表 调用成功!");
             if (result.list.length == "0") {
                 table.find("tbody").empty().html("<tr><td colspan='9'>暂无记录</td></tr>");
                 $(".pagination").hide();
                 return false;
             }
             var oTr,
-                checkTd = '<td><input type="checkbox"></td>',
-                controlTd = "<td>" +
-                    "<a class='J_showCheckBroker text-blue' href='javascript:;'> 审核 </a> | " +
-                    "</td>";
+                checkTd     = '<td><input type="checkbox"></td>',
+                controlTd = "<td><a class='J_showChangeOrg text-blue' href='javascript:;'>修改</a></td>";
             $.each(result.list, function (i, value) {
-                var codeTd      = '<td>' + value.code_id + '</td>';
-                var orgNameTd   = '<td>' + value + '</td>';
+                var codeTd      = '<td>' + value.code_id+ '</td>';
+                var orgNameTd   = '<td>' + value+ '</td>';
                 var orgTypeTd   = '<td>' + config.orgType[value.orgType] + '</td>';
                 var upLevelTd   = '<td>' + config.upLevel[value.upLevel] + '</td>';
                 var phoneTd     = '<td>' + value.phone + '</td>';
@@ -421,8 +520,8 @@ define([
                 }
             }
         }
-
     };
     page.init();
-
 });
+
+

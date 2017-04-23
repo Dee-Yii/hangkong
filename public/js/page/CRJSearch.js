@@ -2,14 +2,14 @@ define([
     "jquery",
     "utils",
     "config",
-    "accountAPI",
+    "clientAPI",
     "layer",
     "pagination",
     "remodal"
-], function ($, utils, config,accountAPI) {
-    var addBrokerModal = $('[data-remodal-id=addBrokerModal]').remodal();
-    var checkBrokerModal = $('[data-remodal-id=checkBrokerModal]').remodal();
+], function ($, utils, config, clientAPI) {
+    var changeLineModal = $('[data-remodal-id=changeLineModal]').remodal();
     var body = $("body");
+
     var page = {
         init: function () {
             this.render();
@@ -17,51 +17,67 @@ define([
         },
         render: function () {
             this.initModal();
+            this.initEventBind();
+            this.fnGetList({},true);
         },
         bindEvents: function () {
             this.onSearch();
-            this.onSelectAll();
-            this.onAdd();
+            this.onStopTrade();
+        },
+        initEventBind: function () {
+            utils.initDatePicker();
         },
         initModal: function () {
-            $(".J_showAdd").on("click", function () {
-                addBrokerModal.open();
-            });
-            body.on("click", ".J_showCheckBroker", function () {
+            body.on("click", ".J_showChangeLine", function () {
                 var $this = $(this);
                 var oTd = $this.parents('tr').find('td');
                 var orgName = oTd.eq(4).text();
-                var brokerId = oTd.eq(1).text();
-                var brokerName = oTd.eq(2).text();
-                var phone = oTd.eq(5).text();
-                var oForm = $(".checkBrokerModal .modalForm");
+                var nickname = oTd.eq(2).text();
+                var phone = oTd.eq(3).text();
+                var oForm = $(".changeLineModal .modalForm");
                 oForm.find("input[name=orgName]").val(orgName);
-                oForm.find("input[name=id]").val(brokerId);
-                oForm.find("input[name=name]").val(brokerName);
+                oForm.find("input[name=nickname]").val(nickname);
                 oForm.find("input[name=phone]").val(phone);
-                checkBrokerModal.open();
+                changeLineModal.open();
             });
+
             $(document).on('closed', '.remodal', function (e) {
                 $(this).find(".modalForm")[0].reset();
             });
         },
-
         onSearch: function () {
 
-        },
 
-        onAdd: function () {
-
+            $(".pagination").show().html("").createPage({
+                pageCount: 10,
+                current: 1,
+                backFn: function (p) {
+                    console.log(p)
+                }
+            })
         },
-        onSelectAll: function () {
-            utils.selectAll();
+        onStopTrade: function () {
+            body.on("click", ".J_showStopTrade", function () {
+                var $this = $(this);
+                var id = $this.parents("tr").attr("data-id");
+                var name = $this.parents("tr").find("td").eq(2).text();
+                layer.confirm(
+                    "警告！停止交易后用户能正常登录，但是无法进行交易",
+                    {},
+                    function () {
+                        clientAPI.stopTrade({id: id}, function (result) {
+                            layer.msg("操作成功");
+                        });
+                        layer.msg("操作成功");
+                    })
+            });
         },
         fnGetList: function (data, initPage) {
             var _this = this;
             var table = $(".data-container table");
             // showLoading(".J_consumeTable");
             // var data = {};
-            // accountAPI.searchUser(data, function (result) {
+            // clientAPI.search(data, function (result) {
             //
             // });
             var result = {
@@ -382,26 +398,27 @@ define([
                         "handle": "0"
                     }]
             };
-            console.log("获取用户管理列表 调用成功!");
+            console.log("获取客户管理列表 调用成功!");
             if (result.list.length == "0") {
-                table.find("tbody").empty().html("<tr><td colspan='9'>暂无记录</td></tr>");
+                table.find("tbody").empty().html("<tr><td colspan='7'>暂无记录</td></tr>");
                 $(".pagination").hide();
                 return false;
             }
             var oTr,
                 checkTd = '<td><input type="checkbox"></td>',
-                controlTd = "<td>" +
-                    "<a class='J_showCheckBroker text-blue' href='javascript:;'> 审核 </a> | " +
+                controlTd =
+                    "<td>" +
+                    "<a class='text-blue' href='/clientManage/clientListView/buyLog?id=123'> 查看 </a> | " +
+                    "<a class='J_showChangeLine text-blue' href='javascript:;'> 额度 </a> | " +
+                    "<a class='J_showStopTrade text-blue' href='javascript:;'> 停止交易 </a>" +
                     "</td>";
             $.each(result.list, function (i, value) {
-                var codeTd      = '<td>' + value.code_id + '</td>';
-                var orgNameTd   = '<td>' + value + '</td>';
-                var orgTypeTd   = '<td>' + config.orgType[value.orgType] + '</td>';
-                var upLevelTd   = '<td>' + config.upLevel[value.upLevel] + '</td>';
-                var phoneTd     = '<td>' + value.phone + '</td>';
-                var cellphoneTd = '<td>' + value.cellphone + '</td>';
-                var statusTd    = '<td>' + config.orgStatus[value.orgStatus] + '</td>';
-                oTr += '<tr class="fadeIn animated">' + checkTd + codeTd + orgNameTd + orgTypeTd + upLevelTd + phoneTd + cellphoneTd + statusTd + controlTd + '</tr>';
+                var timeTd = '<td>' + value.code_id + '</td>';
+                var nameTd = '<td>' + value + '</td>';
+                var phoneTd = '<td>' + value.phone + '</td>';
+                var orgTd = '<td>' + config.orgType[value.orgType] + '</td>';
+                var brokerTd = '<td>' + config.upLevel[value.upLevel] + '</td>';
+                oTr += '<tr class="fadeIn animated">' + checkTd + timeTd + nameTd + phoneTd + orgTd + brokerTd + controlTd + '</tr>';
             });
             table.find("tbody").empty().html(oTr);
 
