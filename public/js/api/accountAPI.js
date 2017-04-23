@@ -52,7 +52,7 @@ define(["jquery"], function ($) {
             $.post("/searchOrg.php",data,function (result) {
                 cb(result);
             })
-        },
+        }
 
 
     };

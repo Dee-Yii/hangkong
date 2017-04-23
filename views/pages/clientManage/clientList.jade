@@ -20,31 +20,33 @@ block content
                 a.btn(href="javascript:;") 查询
             .data-container
                 table
-                    tr
-                        th
-                            input(type="checkbox")
-                        th 注册时间
-                        th 用户昵称
-                        th 手机号码
-                        th 所属机构
-                        th 所属经纪人
-                        th 操作
-                    - var list = [1,2,3,4,5,6,7,8,9,10]
-                    for i in list
+                    thead
                         tr
-                            td
+                            th
                                 input(type="checkbox")
-                            td 2016-10-12
-                            td 瓦夏朵
-                            td 13200989999
-                            td 华东
-                            td 张全蛋
-                            td
-                                a(href="/clientManage/clientListView/buyLog?id=123") 查看
-                                span |
-                                a.J_showChangeLine(href="javascript:;") 额度
-                                span |
-                                a.J_showStopTrade(href="javascript:;") 停止交易
+                            th 注册时间
+                            th 用户昵称
+                            th 手机号码
+                            th 所属机构
+                            th 所属经纪人
+                            th 操作
+                    tbody
+                        - var list = [1,2,3,4,5,6,7,8,9,10]
+                        for i in list
+                            tr
+                                td
+                                    input(type="checkbox")
+                                td 2016-10-12
+                                td 瓦夏朵
+                                td 13200989999
+                                td 华东
+                                td 张全蛋
+                                td
+                                    a(href="/clientManage/clientListView/buyLog?id=123") 查看
+                                    span |
+                                    a.J_showChangeLine(href="javascript:;") 额度
+                                    span |
+                                    a.J_showStopTrade(href="javascript:;") 停止交易
                 .pagination
     include ../../modals/changeLineModal
 block scripts

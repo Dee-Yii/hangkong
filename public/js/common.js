@@ -30,6 +30,8 @@ requirejs.config({
     }
 });
 
-define(["jquery"], function () {
-
+define(["jquery","layer"], function ($) {
+    layer.config({
+        offset: '200px'
+    })
 });

@@ -16,6 +16,7 @@ define([], function () {
         CRJCheckStatus      : ["","已通过","未审核"],
 
         orgType             : ["","航空","陆运","海运","其他"],
+        upLevel             : ["","华东大区","陆运","海运","其他"],
         roleType            : ["","结算专员","客服"],
         CPType              : ["", "买涨", "买跌"],
         tradeType           : ["", "入金", "出金"],
