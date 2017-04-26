@@ -155,10 +155,10 @@ define([
                     page            : 1,
                     type            : type,
                     superMemberid   : superMemberid,
+                    name            : name
                 };
 
                 _this.fnGetList(data,true);
-
 
             });
         },
@@ -181,14 +181,14 @@ define([
                 var oTr,
                     checkTd     = '<td><input type="checkbox"></td>',
                     controlTd = "<td><a class='J_showChangeOrg text-blue' href='javascript:;'>修改</a></td>";
-                $.each(result.list, function (i, value) {
-                    var codeTd      = '<td>' + value.code_id+ '</td>';
-                    var orgNameTd   = '<td>' + value+ '</td>';
-                    var orgTypeTd   = '<td>' + config.orgType[value.orgType] + '</td>';
-                    var upLevelTd   = '<td>' + config.upLevel[value.upLevel] + '</td>';
-                    var phoneTd     = '<td>' + value.phone + '</td>';
-                    var cellphoneTd = '<td>' + value.cellphone + '</td>';
-                    var statusTd    = '<td>' + config.orgStatus[value.orgStatus] + '</td>';
+                $.each(result.list, function (i, v) {
+                    var codeTd      = '<td>' + v.memberid + '</td>';
+                    var orgNameTd   = '<td>' + v.name + '</td>';
+                    var orgTypeTd   = '<td>' + config.orgType[v.type] + '</td>';
+                    var upLevelTd   = '<td>' + v.superMemberInfo + '</td>';
+                    var phoneTd     = '<td>' + v.phone + '</td>';
+                    var cellphoneTd = '<td>' + v.cellphone + '</td>';
+                    var statusTd    = '<td>' + config.orgStatus[v.orgStatus] + '</td>';
                     oTr += '<tr class="fadeIn animated">' + checkTd + codeTd + orgNameTd + orgTypeTd + upLevelTd + phoneTd + cellphoneTd + statusTd + controlTd + '</tr>';
                 });
                 table.find("tbody").empty().html(oTr);

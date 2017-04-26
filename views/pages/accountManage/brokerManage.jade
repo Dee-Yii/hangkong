@@ -11,38 +11,40 @@ block content
                     option(value="") 角色类型
                     option(value="") 注册会员
                     option(value="") 经纪人
-                input(type="text" placeholder="手机号码")
-                input(type="text" placeholder="机构名称")
-                input(type="text" placeholder="关键字：经纪人名称")
-                a.btn(href="javascript:;") 查询
+                input(type="text" name="phone" placeholder="手机号码")
+                input(type="text" name="orgName" placeholder="机构名称")
+                input(type="text" name="nickname" placeholder="关键字：经纪人名称")
+                a.btn.J_search(href="javascript:;") 查询
             include ../../includes/controlBar
             .data-container
                 table
-                    tr
-                        th
-                            input(type="checkbox")
-                        th 登录账号
-                        th 用户昵称
-                        th 角色类型
-                        th 所属机构
-                        th 手机号码
-                        th 状态
-                        th 审核状态
-                        th 操作
-                    - var list = [1,2,3,4,5,6,7,8,9,10]
-                    for i in list
+                    thead
                         tr
-                            td
+                            th
                                 input(type="checkbox")
-                            td XD001
-                            td 设计师
-                            td 高级经纪人
-                            td 华东
-                            td 13200989999
-                            td 有效/被禁用
-                            td 通过/未通过/未审核
-                            td
-                                a.J_showCheckBroker(href="javascript:;") 审核
+                            th 登录账号
+                            th 用户昵称
+                            th 角色类型
+                            th 所属机构
+                            th 手机号码
+                            th 状态
+                            th 审核状态
+                            th 操作
+                    tbody
+                        - var list = [1,2,3,4,5,6,7,8,9,10]
+                        for i in list
+                            tr
+                                td
+                                    input(type="checkbox")
+                                td XD001
+                                td 设计师
+                                td 高级经纪人
+                                td 华东
+                                td 13200989999
+                                td 有效/被禁用
+                                td 通过/未通过/未审核
+                                td
+                                    a.J_showCheckBroker(href="javascript:;") 审核
                 .pagination
     include ../../modals/addBrokerModal
     include ../../modals/checkBrokerModal
