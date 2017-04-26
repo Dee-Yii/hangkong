@@ -4,15 +4,10 @@
 
 define(["jquery"], function ($) {
     var clientAPI = {
-        login: function (data,cb) {
-            $.post("/login.php",data,function (result) {
-                cb(result);
-            })
-        },
         /**
-         * 客户管理-新建机构
+         * 客户管理-修改额度
          */
-        addOrg: function (data,cb) {
+        changeLine: function (data,cb) {
             $.post("/addOrg.php",data,function (result) {
                 cb(result);
             })
@@ -26,9 +21,9 @@ define(["jquery"], function ($) {
             })
         },
         /**
-         * 客户管理-查询
+         * 客户管理-客户列表
          */
-        search: function (data,cb) {
+        getClientList: function (data,cb) {
             $.post("/user/getlist",data,function (result) {
                 cb(result);
             })
