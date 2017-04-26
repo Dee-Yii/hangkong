@@ -49,7 +49,8 @@ define(["jquery"], function ($) {
          * 机构管理-查询
          */
         searchOrg: function (data,cb) {
-            $.post("/searchOrg.php",data,function (result) {
+            data.pageNum = 10;
+            $.post("/member/getList",data,function (result) {
                 cb(result);
             })
         }

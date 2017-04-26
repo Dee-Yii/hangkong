@@ -5,7 +5,7 @@
 define(["jquery"], function ($) {
     var sysAPI = {
         login: function (data,cb) {
-            $.post("/login.php",data,function (result) {
+            $.post("/login/dologin",data,function (result) {
                 cb(result);
             })
         },
