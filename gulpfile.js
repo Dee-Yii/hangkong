@@ -121,7 +121,7 @@ gulp.task('rBuild', function () {
 });
 
 
-gulp.task('compile',['sass','js','images','lib', 'css']);
+gulp.task('compile',['sass','js','images','lib', 'css','jade']);
 
 gulp.task('watch',["sass"],function () {
     gulp.watch(path.sass,['sass']);

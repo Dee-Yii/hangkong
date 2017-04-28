@@ -1,0 +1,1 @@
+define(["jquery"],function(n){var o={login:function(o,t){n.post("/login/dologin",o,function(n){t(n)})},resetPwd:function(){n.post("/resetPwd.php",data,function(n){cb(n)})}};return o});
