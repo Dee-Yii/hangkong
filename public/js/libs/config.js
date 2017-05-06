@@ -8,7 +8,8 @@ define([], function () {
         userStatus          : ["启用","禁用"],
         brokerStatus        : ["","启用","禁用"],
         brokerCheckStatus   : ["","通过","未通过","未审核"],
-        CRJStatus           : ["","平台处理中","银行处理中"],
+        inStatus            : ["失败","处理中","成功","失败","失败","失败"],
+        outStatus           : ["处理中","处理中","成功","失败","退款"],
         CRJCheckStatus      : ["","已通过","未审核"],
 
         orgType             : ["","航空","陆运","海运","其他"],

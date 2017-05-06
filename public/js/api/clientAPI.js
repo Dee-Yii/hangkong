@@ -38,9 +38,25 @@ define(["jquery"], function ($) {
             })
         },
         /**
-         * 客户管理-客户列表
+         * 客户管理-客户列表-已平仓列表
          */
         getYPCList: function (data,cb) {
+            $.post("/trade/closePosition",data,function (result) {
+                cb(result);
+            })
+        },
+        /**
+         * 客户管理-客户列表-出金列表
+         */
+        getOutMoneyList: function (data,cb) {
+            $.post("/trade/closePosition",data,function (result) {
+                cb(result);
+            })
+        },
+        /**
+         * 客户管理-客户列表-入金列表
+         */
+        getInMoneyList: function (data,cb) {
             $.post("/trade/closePosition",data,function (result) {
                 cb(result);
             })
