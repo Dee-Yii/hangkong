@@ -1,12 +1,7 @@
 define([], function () {
     var config = {
-        serviceUrl: ":ws -h 192.168.0.11 -p ", //开发环境
-        //serviceUrl: ":ws -h 192.168.0.12 -p ", //测试环境
-        //serviceUrl: ":ws -h 112.124.3.182 -p ", //生产环境
+        serviceUrl          : "", //开发环境
 
-        ossSignatureUrl: "http://122.224.199.228:8060/service/osssignature",    //开发环境
-        //ossSignatureUrl: "http://122.224.199.228:8080/service/osssignature",    //测试环境
-        //ossSignatureUrl: "http://112.124.3.182:8080/service/osssignature",      //生产环境
 
         orgStatus           : ["启用","禁用"],
         tradeStatus         : ["可以交易","禁止交易"],
