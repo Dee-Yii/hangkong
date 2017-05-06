@@ -10,8 +10,8 @@ define([], function () {
 
         orgStatus           : ["","启用","禁用"],
         tradeStatus         : ["可以交易","禁止交易"],
-        roleStatus          : ["","有效","被禁用"],
-        brokerStatus        : ["","有效","被禁用"],
+        userStatus          : ["启用","禁用"],
+        brokerStatus        : ["","启用","禁用"],
         brokerCheckStatus   : ["","通过","未通过","未审核"],
         CRJStatus           : ["","平台处理中","银行处理中"],
         CRJCheckStatus      : ["","已通过","未审核"],

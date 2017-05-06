@@ -6,22 +6,19 @@
         form.modalForm
             .form-control
                 label 所属机构
-                input(type="text" name="orgName")
+                select(name="org")
+                    option(value="0") 客服
+                    option(value="1") 结算专员
+                    option(value="2") 后台维护管理员
             .form-control
                 label 登录账号
-                input.w200(type="text" name="username")
-                a.check-code.J_checkUsername(href="javascript:;") 检测可用
+                input(type="text" name="username")
             .form-control
                 label 登录密码
                 input(type="text" name="password")
             .form-control
                 label 用户名称
                 input(type="text" name="nickname")
-            .form-control
-                label 所属角色
-                select(name="orgType")
-                    option(value="0") 客服
-                    option(value="1") 结算专员
-                    option(value="2") 后台维护管理员
+
     .remodal-footer
         a.remodal-confirm(href="javascript:;") 确 定

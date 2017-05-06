@@ -5,10 +5,18 @@
 define(["jquery"], function ($) {
     var accountAPI = {
         /**
+         * 机构管理-获取所有机构列表 (添加用户时渲染所属机构 下拉列表)
+         */
+        getOrgList: function (data,cb) {
+            $.post("/member/getList",data,function (result) {
+                cb(result);
+            })
+        },
+        /**
          * 机构管理-新建机构
          */
         addOrg: function (data,cb) {
-            $.post("/addOrg.php",data,function (result) {
+            $.post("/adminuser/addUser",data,function (result) {
                 cb(result);
             })
         },
@@ -56,11 +64,12 @@ define(["jquery"], function ($) {
         },
 
 
+
         /**
          * 用户管理-新建机构
          */
         addUser: function (data,cb) {
-            $.post("/addUser.php",data,function (result) {
+            $.post("/adminuser/addUser",data,function (result) {
                 cb(result);
             })
         },
@@ -68,7 +77,7 @@ define(["jquery"], function ($) {
          * 用户管理-删除
          */
         delUser: function (data,cb) {
-            $.post("/delUser.php",data,function (result) {
+            $.post("/adminuser/delUser",data,function (result) {
                 cb(result);
             })
         },
@@ -81,26 +90,25 @@ define(["jquery"], function ($) {
             })
         },
         /**
-         * 用户管理-启用
+         * 用户管理-重置密码
          */
-        openUser: function (data,cb) {
-            $.post("/openUser.php",data,function (result) {
+        resetPwd: function (data,cb) {
+            $.post("/adminuser/resetPassword",data,function (result) {
                 cb(result);
             })
         },
         /**
-         * 用户管理-禁用
+         * 用户管理-启用
          */
-        closeUser: function (data,cb) {
-            $.post("/closeUser.php",data,function (result) {
+        updateUserStatus: function (data,cb) {
+            $.post("/adminuser/updateStatus",data,function (result) {
                 cb(result);
             })
         },
-
         /**
          * 用户管理-查询
          */
-        searchUser: function (data,cb) {
+        getUserList: function (data,cb) {
             data.pageNum = 10;
             $.post("/member/getList",data,function (result) {
                 cb(result);
@@ -111,7 +119,7 @@ define(["jquery"], function ($) {
         /**
          * 经纪人管理-新建机构
          */
-        addUser: function (data,cb) {
+        addBroker: function (data,cb) {
             $.post("/addUser.php",data,function (result) {
                 cb(result);
             })
