@@ -10,6 +10,8 @@ define([
     var addOrgModal = $('[data-remodal-id=addOrgModal]').remodal();
     var changeOrgModal = $('[data-remodal-id=changeOrgModal]').remodal();
     var oInput = $(".data-container table tbody input[type=checkbox]:checked");
+    var userId;
+
 
     var body = $("body");
     var page = {
@@ -79,6 +81,44 @@ define([
                     $this.removeClass("disabled");
                 })
             })
+        },
+
+        /**
+         * 启用/禁用用户
+         */
+        onUpdateUserStatus: function () {
+            var _this = this;
+            $(".J_updateStatus").on("click", function () {
+                var selectArr = _this.fnGetSelect();
+                if(!selectArr.length){
+                    layer.msg("请选择要操作的数据");
+                    return;
+                }
+                var data={
+                    id: selectArr,
+                    status: $(this).hasClass('open-i') ? 0 : 1
+                };
+
+                // *********
+                var text = data.status === 0 ? '启用成功' : '禁用成功';
+                _this.fnGetList({}, true);
+                layer.msg(text);
+                // *********
+
+                accountAPI.updateOrgStatus(data,function () {
+                    var text = data.status === 0 ? '启用成功' : '禁用成功';
+                    if(result.cade == 0){
+                        layer.msg(text);
+                        // _this.fnGetList({}, true);
+                        oInput.each(function () {
+                            $(this).parents("tr").find("td").eq(7).text(config.orgStatus[data.status])
+                        })
+                    } else{
+                        layer.msg("操作失败");
+                    }
+                })
+            })
+
         },
 
         onOpen: function () {
@@ -528,6 +568,16 @@ define([
             //         }]
             // };
 
+        },
+        fnGetSelect: function () {
+            var arr = [];
+            $(".data-container table tbody tr").each(function () {
+                var $this = $(this);
+                if($this.find("input[type=checkbox]").prop("checked")){
+                    arr.push($this.attr('data-id'));
+                }
+            });
+            return arr;
         }
     };
     page.init();

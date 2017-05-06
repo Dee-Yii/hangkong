@@ -8,7 +8,7 @@ define([], function () {
         //ossSignatureUrl: "http://122.224.199.228:8080/service/osssignature",    //测试环境
         //ossSignatureUrl: "http://112.124.3.182:8080/service/osssignature",      //生产环境
 
-        orgStatus           : ["","启用","禁用"],
+        orgStatus           : ["启用","禁用"],
         tradeStatus         : ["可以交易","禁止交易"],
         userStatus          : ["启用","禁用"],
         brokerStatus        : ["","启用","禁用"],

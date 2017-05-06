@@ -37,18 +37,10 @@ define(["jquery"], function ($) {
             })
         },
         /**
-         * 机构管理-启用
+         * 用户管理-启用
          */
-        openOrg: function (data,cb) {
-            $.post("/openOrg.php",data,function (result) {
-                cb(result);
-            })
-        },
-        /**
-         * 机构管理-禁用
-         */
-        closeOrg: function (data,cb) {
-            $.post("/closeOrg.php",data,function (result) {
+        updateOrgStatus: function (data,cb) {
+            $.post("/adminuser/updateStatus",data,function (result) {
                 cb(result);
             })
         },
