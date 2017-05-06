@@ -1,14 +1,27 @@
 @import "./base/common";
+body{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("../images/login-bg.jpg");
+    background-size: cover;
+}
 .wrap{
-    padding-top: 200px;
+
 }
 .main{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -200px;
+    margin-left: -300px;
     width: 600px;
-    margin: 0 auto;
     padding: 50px;
-    border: 1px solid $borderColor;
     border-radius: 4px;
-    background-color: #fff;
+    background-color: rgba(0,0,0,.3);
+    color: #fff;
     h5{
         font-size: 26px;
         text-align: center;
@@ -58,6 +71,6 @@
     @include button($height: 44px);
     width: 300px;
     margin-top: 30px;
-    margin-left: 100px;
+    margin-left: 110px;
 }
 

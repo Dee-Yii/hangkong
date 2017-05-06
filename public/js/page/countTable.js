@@ -2,508 +2,411 @@ define([
     "jquery",
     "utils",
     "config",
-    "accountAPI",
+    "clientAPI",
     "layer",
     "pagination",
     "remodal"
-], function ($, utils, config, accountAPI) {
-    var addOrgModal = $('[data-remodal-id=addOrgModal]').remodal();
-    var changeOrgModal = $('[data-remodal-id=changeOrgModal]').remodal();
-    var oInput = $(".data-container table tbody input[type=checkbox]:checked");
-
-    var body = $("body");
+], function ($, utils, config, clientAPI) {
     var page = {
         init: function () {
             this.render();
             this.bindEvents();
         },
-
         render: function () {
-            this.initModal();
-            this.fnGetList({},true);
+            utils.initDatePicker();
+            utils.initClientInfo();
+            this.fnGetList({}, true);
         },
-
         bindEvents: function () {
-            // this.onSelectAll();
-            this.onAdd();
-            this.onOpen();
-            this.onClose();
-            this.onDel();
-            this.onChange();
             this.onSearch();
         },
 
-        initModal: function () {
-            $(".J_showAdd").on("click", function () {
-                addOrgModal.open();
-            });
-            body.on("click", ".J_showChangeOrg", function () {
-                var $this = $(this);
-                var oTd = $this.parents('tr').find('td');
-                var id = oTd.eq(1).text();
-                var name = oTd.eq(2).text();
-                var type = oTd.eq(3).text();
-                var upLevel = oTd.eq(4).text();
-                var phone = oTd.eq(5).text();
-                var cellphone = oTd.eq(6).text();
-                var oForm = $(".changeOrgModal .modalForm");
-                oForm.find("input[name=orgId]").val(id);
-                oForm.find("input[name=orgName]").val(name);
-                oForm.find("input[name=orgLevel]").val(name);
-                oForm.find("input[name=orgType]").val(name);
-                oForm.find("input[name=phone]").val(phone);
-                oForm.find("input[name=cellphone]").val(cellphone);
-                changeOrgModal.open();
-            });
-
-            $(document).on('closed', '.remodal', function (e) {
-                $(this).find(".modalForm")[0].reset();
-            });
-        },
-        onAdd: function () {
-            var confirmBtn = $(".addOrgModal .remodal-confirm");
-            confirmBtn.on("click", function (e) {
-                e.preventDefault();
-
-                var $this = $(this);
-                if ($this.hasClass("disabled")) return;
-                $this.addClass("disabled");
-
-                // todo Validate
-                var data = {};
-                accountAPI.addOrg(data, function (result) {
-                    console.log(result);
-
-                    addOrgModal.close();
-                    $this.removeClass("disabled");
-                })
-            })
-        },
-        onOpen: function () {
-            $(".J_showOpen").on("click", function () {
-                var idArr = utils.getCheckedArr();
-                if (idArr.length > 0) {
-                    layer.confirm('确定启用选中的列表项吗？', {icon: 3}, function (index) {
-                        accountAPI.openOrg(idArr, function (result) {
-                            oInput.each(function () {
-                                $(this).parents("tr").find("td").eq(7).text(config.orgStatus[1])
-                            })
-                        });
-                        layer.close(index)
-                    });
-
-                } else {
-                    layer.alert("请先选择要启用的列表项");
-                }
-            })
-        },
-        onClose: function () {
-            $(".J_showClose").on("click", function () {
-                var idArr = utils.getCheckedArr();
-                if (idArr.length > 0) {
-                    layer.confirm('确定禁用选中的列表项吗？', {icon: 3}, function (index) {
-                        accountAPI.closeOrg(idArr, function (result) {
-                            oInput.each(function () {
-                                $(this).parents("tr").find("td").eq(7).text(config.orgStatus[2])
-                            })
-                        });
-                        layer.close(index)
-                    });
-                } else {
-                    layer.alert("请先选择要禁用的列表项");
-                }
-            })
-        },
-        onDel: function () {
-            $(".J_showDel").on("click", function () {
-                var idArr = utils.getCheckedArr();
-                if (idArr.length > 0) {
-                    layer.confirm('确定删除选中的列表项吗？', {icon: 3}, function (index) {
-                        accountAPI.delOrg(idArr, function (result) {
-                            oInput.each(function () {
-                                $(this).parents("tr").remove();
-                            })
-                        });
-                        layer.close(index)
-                    });
-                } else {
-                    layer.alert("请先选择要删除的列表项", {icon: 0});
-                }
-            })
-        },
-        onChange: function () {
-            $(".changeOrgModal .remodal-confirm").on("click", function () {
-                var data = {};
-                accountAPI.changeOrg(data, function (result) {
-                    layer.msg("修改成功");
-                })
-            })
-        },
         onSearch: function () {
-            var _this = this;
-            $(".J_search").on("click", function () {
-                var type = $("input[name=type]").val(),
-                    level = $("input[name=level]").val(),
-                    phone = $("input[name=phone]").val() || "",
-                    orgName = $("input[name=orgName]").val() || "";
-                var data = {};
 
-                _this.fnGetList(data,true);
-
-
-            });
-        },
-
-        onSelectAll: function () {
-            utils.selectAll();
         },
         fnGetList: function (data, initPage) {
             var _this = this;
             var table = $(".data-container table");
-            // showLoading(".J_consumeTable");
-            // var data = {};
-            // accountAPI.searchOrg(data, function (result) {
-            //
-            // });
-            var result = {
-                "totalPages": 91,
+            clientAPI.getInMoneyList(data, function (result) {
+                console.log("获取入金记录 调用成功!");
+                if (result.list.length == "0") {
+                    table.find("tbody").empty().html("<tr><td colspan='6'>暂无记录</td></tr>");
+                    $(".pagination").hide();
+                    return false;
+                }
+                var oTr;
+                $.each(result.list, function (i, v) {
+                    var timeTd = '<td>' + v.close_position_time + '</td>';
+                    var usernameTd = '<td>' + (v.userInfo ? v.userInfo.phoneNum : "") + '</td>';
+                    var goodsNameTd = '<td>' + (v.actaulInfo ? v.actaulInfo.name : "") + '</td>';
+                    var dirTd = '<td>' + (v.buy_sell == -1 ? "卖出" : "买入") + '</td>';
+                    var incomeTd = '<td>'+(v.result*v.gross_profit).toFixed(2)+'</td>';
+                    oTr +=
+                        '<tr class="fadeIn animated">'
+                        + timeTd + usernameTd  + goodsNameTd + dirTd + incomeTd +
+                        '</tr>';
+                });
+                table.find("tbody").empty().html(oTr);
+                if (initPage) {
+                    var pageCount = result.totalPages;
+                    if (pageCount > 0) {
+                        console.log("页数：" + pageCount);
+                        $(".pagination").show().html("").createPage({
+                            pageCount: pageCount,
+                            current: 1,
+                            backFn: function (p) {
+                                var newData = data;
+                                newData.page = p;
+                                _this.fnGetList(data)
+                            }
+                        })
+                    }
+                }
+            });
+
+
+            //***************
+            var result ={
+                "totalPages": 162,
                 "pageNum": 5,
                 "page": 1,
                 "list": [
                     {
-                        "tid": "141474220113067346",
+                        "tid": "1757850905579034113",
                         "uid": "5",
-                        "code_id": "12",
+                        "code_id": "11",
                         "buy_sell": "-1",
                         "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
+                        "symbol": "fx_susdcnh",
+                        "name": "上海-纽约1分钟",
                         "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
+                        "amount": "50",
+                        "open_position_time": "1493883365",
+                        "close_position_time": "2017-05-04 15:37:05",
+                        "gross_profit": "776.786",
+                        "open_price": "6.8971",
+                        "open_cost": "776.786",
                         "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "141474220113067346",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "141474220113067346",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "141474220113067346",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "141474220113067346",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "141474220113067346",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "141474220113067346",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "141474220113067346",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "141474220113067346",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "141474220113067346",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "141474220113067346",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "141474220113067346",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003017",
-                        "close_position_time": "1490003077",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.06111",
-                        "pos_limit": "0",
-                        "stop": "0",
-                        "deferred": "0",
-                        "is_deferred": null,
-                        "result": "-1",
-                        "handle": "0"
-                    },
-                    {
-                        "tid": "7418135986911958157",
-                        "uid": "5",
-                        "code_id": "12",
-                        "buy_sell": "-1",
-                        "code": null,
-                        "symbol": "fx_sjpycnh",
-                        "name": "\u4e0a\u6d77-\u4e1c\u4eac1\u5206\u949f",
-                        "close_type": "6",
-                        "amount": "3",
-                        "open_position_time": "1490003025",
-                        "close_position_time": "1490003085",
-                        "gross_profit": "33.4023",
-                        "open_price": "0.06111",
-                        "open_cost": "33.4023",
-                        "open_charge": "0.15",
-                        "close_price": "0.061104",
+                        "close_price": "6.8969",
                         "pos_limit": "0",
                         "stop": "0",
                         "deferred": "0",
                         "is_deferred": null,
                         "result": "1",
-                        "handle": "0"
-                    }]
+                        "handle": "1",
+                        "actaulInfo": {
+                            "id": "1",
+                            "code": "AG100G",
+                            "name": "0.1kg白银",
+                            "symbol": "AG",
+                            "unit": "0.1kg",
+                            "amount": "0.1",
+                            "profit": "0.1",
+                            "deposit": "8",
+                            "open": "0.7",
+                            "close": "0",
+                            "deferred": "0.1",
+                            "max": "30",
+                            "min": " 1",
+                            "exchange_name": "DEFAULT",
+                            "platform_name": "JH",
+                            "status": "1",
+                            "sort": "1",
+                            "show_symbol": "白银",
+                            "show_name": "0.1kg"
+                        },
+                        "userInfo": {
+                            "uid": "5",
+                            "phoneNum": "18668169052",
+                            "nickname": "",
+                            "type": "0",
+                            "headUrl": "",
+                            "passwd": "4bcf73028a526f5ae6899759ab332c3d3b173855bef3b22b19224cd5233d39c0",
+                            "cashLv": "0",
+                            "registerTime": "2017-03-20 12:59:02",
+                            "registerStatus": "0",
+                            "gender": "0",
+                            "lastLoginTime": "2017-04-13 09:56:35",
+                            "lastLoginIp": "60.186.229.22",
+                            "memberId": "1",
+                            "agentId": "1",
+                            "recommend": "1",
+                            "status": "0"
+                        }
+                    },
+                    {
+                        "tid": "1674807288714476621",
+                        "uid": "5",
+                        "code_id": "12",
+                        "buy_sell": "-1",
+                        "code": null,
+                        "symbol": "fx_sjpycnh",
+                        "name": "上海-东京1分钟",
+                        "close_type": "6",
+                        "amount": "50",
+                        "open_position_time": "1493883340",
+                        "close_position_time": "2017-05-04 15:36:40",
+                        "gross_profit": "556.486",
+                        "open_price": "0.061086",
+                        "open_cost": "556.486",
+                        "open_charge": "0.15",
+                        "close_price": "0.061086",
+                        "pos_limit": "0",
+                        "stop": "0",
+                        "deferred": "0",
+                        "is_deferred": null,
+                        "result": "-1",
+                        "handle": "0",
+                        "actaulInfo": {
+                            "id": "1",
+                            "code": "AG100G",
+                            "name": "0.1kg白银",
+                            "symbol": "AG",
+                            "unit": "0.1kg",
+                            "amount": "0.1",
+                            "profit": "0.1",
+                            "deposit": "8",
+                            "open": "0.7",
+                            "close": "0",
+                            "deferred": "0.1",
+                            "max": "30",
+                            "min": " 1",
+                            "exchange_name": "DEFAULT",
+                            "platform_name": "JH",
+                            "status": "1",
+                            "sort": "1",
+                            "show_symbol": "白银",
+                            "show_name": "0.1kg"
+                        },
+                        "userInfo": {
+                            "uid": "5",
+                            "phoneNum": "18668169052",
+                            "nickname": "",
+                            "type": "0",
+                            "headUrl": "",
+                            "passwd": "4bcf73028a526f5ae6899759ab332c3d3b173855bef3b22b19224cd5233d39c0",
+                            "cashLv": "0",
+                            "registerTime": "2017-03-20 12:59:02",
+                            "registerStatus": "0",
+                            "gender": "0",
+                            "lastLoginTime": "2017-04-13 09:56:35",
+                            "lastLoginIp": "60.186.229.22",
+                            "memberId": "1",
+                            "agentId": "1",
+                            "recommend": "1",
+                            "status": "0"
+                        }
+                    },
+                    {
+                        "tid": "3642050484610273488",
+                        "uid": "5",
+                        "code_id": "12",
+                        "buy_sell": "1",
+                        "code": null,
+                        "symbol": "fx_sjpycnh",
+                        "name": "上海-东京1分钟",
+                        "close_type": "6",
+                        "amount": "50",
+                        "open_position_time": "1493883324",
+                        "close_position_time": "2017-05-04 15:36:24",
+                        "gross_profit": "556.486",
+                        "open_price": "0.061086",
+                        "open_cost": "556.486",
+                        "open_charge": "0.15",
+                        "close_price": "0.061086",
+                        "pos_limit": "0",
+                        "stop": "0",
+                        "deferred": "0",
+                        "is_deferred": null,
+                        "result": "-1",
+                        "handle": "0",
+                        "actaulInfo": {
+                            "id": "1",
+                            "code": "AG100G",
+                            "name": "0.1kg白银",
+                            "symbol": "AG",
+                            "unit": "0.1kg",
+                            "amount": "0.1",
+                            "profit": "0.1",
+                            "deposit": "8",
+                            "open": "0.7",
+                            "close": "0",
+                            "deferred": "0.1",
+                            "max": "30",
+                            "min": " 1",
+                            "exchange_name": "DEFAULT",
+                            "platform_name": "JH",
+                            "status": "1",
+                            "sort": "1",
+                            "show_symbol": "白银",
+                            "show_name": "0.1kg"
+                        },
+                        "userInfo": {
+                            "uid": "5",
+                            "phoneNum": "18668169052",
+                            "nickname": "",
+                            "type": "0",
+                            "headUrl": "",
+                            "passwd": "4bcf73028a526f5ae6899759ab332c3d3b173855bef3b22b19224cd5233d39c0",
+                            "cashLv": "0",
+                            "registerTime": "2017-03-20 12:59:02",
+                            "registerStatus": "0",
+                            "gender": "0",
+                            "lastLoginTime": "2017-04-13 09:56:35",
+                            "lastLoginIp": "60.186.229.22",
+                            "memberId": "1",
+                            "agentId": "1",
+                            "recommend": "1",
+                            "status": "0"
+                        }
+                    },
+                    {
+                        "tid": "8791282959331912359",
+                        "uid": "5",
+                        "code_id": "10",
+                        "buy_sell": "-1",
+                        "code": null,
+                        "symbol": "fx_seurcnh",
+                        "name": "上海-法兰克福1分钟",
+                        "close_type": "6",
+                        "amount": "1",
+                        "open_position_time": "1493882924",
+                        "close_position_time": "2017-05-04 15:29:44",
+                        "gross_profit": "12.7015",
+                        "open_price": "7.509",
+                        "open_cost": "12.7015",
+                        "open_charge": "0.15",
+                        "close_price": "7.509",
+                        "pos_limit": "0",
+                        "stop": "0",
+                        "deferred": "0",
+                        "is_deferred": null,
+                        "result": "-1",
+                        "handle": "0",
+                        "actaulInfo": {
+                            "id": "1",
+                            "code": "AG100G",
+                            "name": "0.1kg白银",
+                            "symbol": "AG",
+                            "unit": "0.1kg",
+                            "amount": "0.1",
+                            "profit": "0.1",
+                            "deposit": "8",
+                            "open": "0.7",
+                            "close": "0",
+                            "deferred": "0.1",
+                            "max": "30",
+                            "min": " 1",
+                            "exchange_name": "DEFAULT",
+                            "platform_name": "JH",
+                            "status": "1",
+                            "sort": "1",
+                            "show_symbol": "白银",
+                            "show_name": "0.1kg"
+                        },
+                        "userInfo": {
+                            "uid": "5",
+                            "phoneNum": "18668169052",
+                            "nickname": "",
+                            "type": "0",
+                            "headUrl": "",
+                            "passwd": "4bcf73028a526f5ae6899759ab332c3d3b173855bef3b22b19224cd5233d39c0",
+                            "cashLv": "0",
+                            "registerTime": "2017-03-20 12:59:02",
+                            "registerStatus": "0",
+                            "gender": "0",
+                            "lastLoginTime": "2017-04-13 09:56:35",
+                            "lastLoginIp": "60.186.229.22",
+                            "memberId": "1",
+                            "agentId": "1",
+                            "recommend": "1",
+                            "status": "0"
+                        }
+                    },
+                    {
+                        "tid": "3450102723273383353",
+                        "uid": "5",
+                        "code_id": "10",
+                        "buy_sell": "-1",
+                        "code": null,
+                        "symbol": "fx_seurcnh",
+                        "name": "上海-法兰克福1分钟",
+                        "close_type": "6",
+                        "amount": "50",
+                        "open_position_time": "1493882909",
+                        "close_position_time": "2017-05-04 15:29:29",
+                        "gross_profit": "634.989",
+                        "open_price": "7.508",
+                        "open_cost": "634.989",
+                        "open_charge": "0.15",
+                        "close_price": "7.509",
+                        "pos_limit": "0",
+                        "stop": "0",
+                        "deferred": "0",
+                        "is_deferred": null,
+                        "result": "-1",
+                        "handle": "0",
+                        "actaulInfo": {
+                            "id": "1",
+                            "code": "AG100G",
+                            "name": "0.1kg白银",
+                            "symbol": "AG",
+                            "unit": "0.1kg",
+                            "amount": "0.1",
+                            "profit": "0.1",
+                            "deposit": "8",
+                            "open": "0.7",
+                            "close": "0",
+                            "deferred": "0.1",
+                            "max": "30",
+                            "min": " 1",
+                            "exchange_name": "DEFAULT",
+                            "platform_name": "JH",
+                            "status": "1",
+                            "sort": "1",
+                            "show_symbol": "白银",
+                            "show_name": "0.1kg"
+                        },
+                        "userInfo": {
+                            "uid": "5",
+                            "phoneNum": "18668169052",
+                            "nickname": "",
+                            "type": "0",
+                            "headUrl": "",
+                            "passwd": "4bcf73028a526f5ae6899759ab332c3d3b173855bef3b22b19224cd5233d39c0",
+                            "cashLv": "0",
+                            "registerTime": "2017-03-20 12:59:02",
+                            "registerStatus": "0",
+                            "gender": "0",
+                            "lastLoginTime": "2017-04-13 09:56:35",
+                            "lastLoginIp": "60.186.229.22",
+                            "memberId": "1",
+                            "agentId": "1",
+                            "recommend": "1",
+                            "status": "0"
+                        }
+                    }
+                ]
             };
-            console.log("获取机构管理列表 调用成功!");
+            console.log("获取入金记录 调用成功!");
             if (result.list.length == "0") {
-                table.find("tbody").empty().html("<tr><td colspan='9'>暂无记录</td></tr>");
+                table.find("tbody").empty().html("<tr><td colspan='6'>暂无记录</td></tr>");
                 $(".pagination").hide();
                 return false;
             }
-            var oTr,
-                checkTd     = '<td><input type="checkbox"></td>',
-                controlTd = "<td><a class='J_showChangeOrg text-blue' href='javascript:;'>修改</a></td>";
-            $.each(result.list, function (i, value) {
-                var codeTd      = '<td>' + value.code_id+ '</td>';
-                var orgNameTd   = '<td>' + value+ '</td>';
-                var orgTypeTd   = '<td>' + config.orgType[value.orgType] + '</td>';
-                var upLevelTd   = '<td>' + config.upLevel[value.upLevel] + '</td>';
-                var phoneTd     = '<td>' + value.phone + '</td>';
-                var cellphoneTd = '<td>' + value.cellphone + '</td>';
-                var statusTd    = '<td>' + config.orgStatus[value.orgStatus] + '</td>';
-                oTr += '<tr class="fadeIn animated">' + checkTd + codeTd + orgNameTd + orgTypeTd + upLevelTd + phoneTd + cellphoneTd + statusTd + controlTd + '</tr>';
+            var oTr;
+            $.each(result.list, function (i, v) {
+                var timeTd = '<td>' + v.close_position_time + '</td>';
+                var usernameTd = '<td>' + (v.userInfo ? v.userInfo.phoneNum : "") + '</td>';
+                var goodsNameTd = '<td>' + (v.actaulInfo ? v.actaulInfo.name : "") + '</td>';
+                var dirTd = '<td>' + (v.buy_sell == -1 ? "卖出" : "买入") + '</td>';
+                var incomeTd = '<td>'+(v.result*v.gross_profit).toFixed(2)+'</td>';
+                oTr +=
+                    '<tr class="fadeIn animated">'
+                    + timeTd + usernameTd  + goodsNameTd + dirTd + incomeTd +
+                    '</tr>';
             });
             table.find("tbody").empty().html(oTr);
-
             if (initPage) {
                 var pageCount = result.totalPages;
                 if (pageCount > 0) {
@@ -519,9 +422,10 @@ define([
                     })
                 }
             }
+            //***************
         }
+
     };
     page.init();
+
 });
-
-

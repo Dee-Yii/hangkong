@@ -24,46 +24,18 @@ block content
             .data-container
                 .count-table
                     table
-                        tr
-                            th 结算时间
-                            th 机构编码
-                            th 机构名称
-                            th 上级机构
-                            th 初期余额
-                            th 充值
-                            th 充值手续费
-                            th 提现
-                            th 提现手续费
-                            th 留存金额
-                            th 总收益
-                            th 手续费
-                            th 现金盈亏
-                            th 关联手续费
-                            th 原始手续费
-                            th 交易手续费
-                        - var list = [1,2,3,4,5,6,7,8,9,10]
-                        for i in list
+                        thead
                             tr
-                                td 2016-10-12
-                                td #{"00"+i}
-                                td 华东
-                                td 华东运营
-                                td 0.00
-                                td 0.00
-                                td 0.00
-                                td 0.00
-                                td
-                                td
-                                td
-                                td
-                                td
-                                td
-                                td
-                                td
+                                th 交易时间
+                                th 交易用户名称
+                                th 交易商品名称
+                                th 买卖方向
+                                th 收益
+                        tbody
                 .pagination
 
 block scripts
     script.
         require(['common'], function () {
-            require(['page/orgManage']);
+            require(['page/countTable']);
         });
