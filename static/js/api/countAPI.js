@@ -1,1 +1,1 @@
-define(["jquery"],function(n){var o={login:function(o,t){n.post("/login.php",o,function(n){t(n)})},addOrg:function(o,t){n.post("/addOrg.php",o,function(n){t(n)})},changeOrg:function(o,t){n.post("/addOrg.php",o,function(n){t(n)})}};return o});
+define(["jquery"],function(n){var r={changeOrg:function(r,e){n.post("/trade/report",r,function(n){e(n)})}};return r});
