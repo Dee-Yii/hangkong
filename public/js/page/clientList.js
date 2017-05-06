@@ -269,7 +269,7 @@ define([
                 var statusTd = '<td>' + config.tradeStatus[v.status] + '</td>';
                 var controlTd =
                     "<td>" +
-                    "<a class='text-blue' href='/clientManage/clientListView/buyLog?uid=" + v.uid + "'> 查看 </a> " +
+                    "<a class='text-blue' href='/clientManage/clientListView/wpcLog?uid=" + v.uid + "'> 查看 </a> " +
                     // "<a class='J_showChangeLine text-blue' href='javascript:;'> 额度 </a> | " +
                     // "<a class='J_showStopTrade text-blue' href='javascript:;'> 停止交易 </a>" +
                     "</td>";

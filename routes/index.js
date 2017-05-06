@@ -55,30 +55,30 @@ router.get('/clientManage/clientList', function (req, res, next) {
         level: [2,1]
     });
 });
-/* 客户列表-查看-购买记录 */
-router.get('/clientManage/clientListView/buyLog', function (req, res, next) {
-    res.render('pages/clientManage/clientListView/buyLog', {
-        title: '购买记录',
+/* 客户列表-查看-未平仓 */
+router.get('/clientManage/clientListView/wpcLog', function (req, res, next) {
+    res.render('pages/clientManage/clientListView/wpcLog', {
+        title: '未平仓',
         level: [2,1]
     });
 });
-/* 客户列表-查看-出入金记录 */
-router.get('/clientManage/clientListView/chuRuJinLog', function (req, res, next) {
-    res.render('pages/clientManage/clientListView/chuRuJinLog', {
-        title: '出入金记录',
+/* 客户列表-查看-已平仓 */
+router.get('/clientManage/clientListView/ypcLog', function (req, res, next) {
+    res.render('pages/clientManage/clientListView/ypcLog', {
+        title: '已平仓',
         level: [2,1]
     });
 });
-/* 客户列表-查看-资金流水 */
-router.get('/clientManage/clientListView/wasteBook', function (req, res, next) {
-    res.render('pages/clientManage/clientListView/wasteBook', {
-        title: '资金流水',
+/* 客户列表-查看-出金记录 */
+router.get('/clientManage/clientListView/outLog', function (req, res, next) {
+    res.render('pages/clientManage/clientListView/outLog', {
+        title: '出金记录',
         level: [2,1]
     });
-});/* 客户列表-查看-资金记录 */
-router.get('/clientManage/clientListView/moneyLog', function (req, res, next) {
-    res.render('pages/clientManage/clientListView/moneyLog', {
-        title: '资金记录',
+});/* 客户列表-查看-入金记录 */
+router.get('/clientManage/clientListView/inLog', function (req, res, next) {
+    res.render('pages/clientManage/clientListView/inLog', {
+        title: '入金记录',
         level: [2,1]
     });
 });

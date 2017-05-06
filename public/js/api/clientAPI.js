@@ -20,11 +20,28 @@ define(["jquery"], function ($) {
                 cb(result);
             })
         },
+
         /**
          * 客户管理-客户列表
          */
         getClientList: function (data,cb) {
             $.post("/user/getlist",data,function (result) {
+                cb(result);
+            })
+        },
+        /**
+         * 客户管理-客户列表-未平仓列表
+         */
+        getWPCList: function (data,cb) {
+            $.post("/trade/closePosition",data,function (result) {
+                cb(result);
+            })
+        },
+        /**
+         * 客户管理-客户列表
+         */
+        getYPCList: function (data,cb) {
+            $.post("/trade/closePosition",data,function (result) {
                 cb(result);
             })
         }

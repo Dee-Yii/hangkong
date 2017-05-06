@@ -1,7 +1,6 @@
-define(["jquery", "config", "datepicker", "layer"], function ($,config) {
+define(["jquery", "config", "datepicker", "layer"], function ($, config) {
 
     var utils = {
-
         getQuery: function (name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
             var r = window.location.search.substr(1).match(reg);
@@ -20,40 +19,40 @@ define(["jquery", "config", "datepicker", "layer"], function ($,config) {
             })
         },
         initDatePicker: function () {
-        var oStart = $('#dateStart');
-        var oEnd = $('#dateEnd');
-        oStart.datetimepicker({
-            lang: 'ch',
-            timepicker: false,
-            format: 'Y-m-d',
-            formatDate: 'Y-m-d',
-            scrollInput: false,
-            validateOnBlur: false,
-            onShow: function (ct) {
-                this.setOptions({
-                    maxDate: oEnd.val() ? oEnd.val() : '+1970-01-01'
-                })
-            },
-            // minDate:'-1970-01-01',
+            var oStart = $('#dateStart');
+            var oEnd = $('#dateEnd');
+            oStart.datetimepicker({
+                lang: 'ch',
+                timepicker: false,
+                format: 'Y-m-d',
+                formatDate: 'Y-m-d',
+                scrollInput: false,
+                validateOnBlur: false,
+                onShow: function (ct) {
+                    this.setOptions({
+                        maxDate: oEnd.val() ? oEnd.val() : '+1970-01-01'
+                    })
+                },
+                // minDate:'-1970-01-01',
 
-            //yearStart: 2016,     //设置最小年份
-            //yearEnd: 2050,        //设置最大年份
-        });
-        oEnd.datetimepicker({
-            lang: 'ch',
-            timepicker: false,
-            format: 'Y-m-d',
-            formatDate: 'Y-m-d',
-            scrollInput: false,
-            validateOnBlur: false,
-            maxDate: '+1970-01-01',
-            onShow: function (ct) {
-                this.setOptions({
-                    minDate: oStart.val() ? oStart.val() : false
-                })
-            }
-        });
-    },
+                //yearStart: 2016,     //设置最小年份
+                //yearEnd: 2050,        //设置最大年份
+            });
+            oEnd.datetimepicker({
+                lang: 'ch',
+                timepicker: false,
+                format: 'Y-m-d',
+                formatDate: 'Y-m-d',
+                scrollInput: false,
+                validateOnBlur: false,
+                maxDate: '+1970-01-01',
+                onShow: function (ct) {
+                    this.setOptions({
+                        minDate: oStart.val() ? oStart.val() : false
+                    })
+                }
+            });
+        },
         getCheckedArr: function () {
             var idArr = [];
             var oInput = $(".data-container table tbody input[type=checkbox]:checked");
@@ -61,6 +60,14 @@ define(["jquery", "config", "datepicker", "layer"], function ($,config) {
                 idArr.push($(this).val())
             });
             return idArr;
+        },
+        initClientInfo: function () {
+            var userId = utils.getQuery('uid');
+            $(".data-container .tab-btns a").each(function () {
+                var $this = $(this);
+                var href = $this.attr("href") + '?uid=' + userId;
+                $this.attr("href", href);
+            });
         },
         /**
          * 表单验证
@@ -82,7 +89,6 @@ define(["jquery", "config", "datepicker", "layer"], function ($,config) {
     function valid(str, regex) {
         return regex.test(str)
     }
-
 
 
     return utils;
